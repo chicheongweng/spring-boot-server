@@ -26,8 +26,7 @@ import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource({ "classpath:persistence-${envTarget:h2}.properties" })
-//@PropertySource({ "classpath:application.properties" })
+@PropertySource({ "classpath:persistence-${env:h2}.properties" })
 
 public class PersistenceConfig {
     Logger logger = LoggerFactory.getLogger(PersistenceConfig.class);
