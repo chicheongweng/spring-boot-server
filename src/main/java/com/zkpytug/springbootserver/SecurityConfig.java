@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-class securityConfig {
+class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         
