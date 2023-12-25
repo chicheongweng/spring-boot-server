@@ -8,15 +8,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
 import redis.clients.jedis.Jedis;
@@ -28,34 +34,21 @@ import redis.clients.jedis.Transaction;
 import redis.embedded.RedisServer;
 import redis.clients.jedis.DefaultJedisClientConfig;
 
-//@Configuration
 @EnableConfigurationProperties(RedisProperties.class)
-//@EnableTransactionManagement
-//@PropertySource({ "classpath:persistence-${env:local}.properties" })
 public class JedisIntegrationTest {
 
+    private static String host = "localhost";
+
+    private static Integer port = 6379;
+
+    private static Integer timeout = 60000;
+    private static String password = "password";
     private static Jedis jedis;
     private static RedisServer redisServer;
-    private static int port;
-
     @BeforeAll
     public static void setUp() throws IOException {
-
-        // Take an available port
-        /*
-        ServerSocket s = new ServerSocket(0);
-        port = s.getLocalPort();
-        s.close();
-
-        redisServer = RedisServer.builder()
-                .port(port)
-                .setting("maxmemory 128M")
-                .build();
-        redisServer.start();
-        */
-        // Configure JEDIS
-        jedis = new Jedis("localhost", 6379);
-        jedis.auth("password");
+        jedis = new Jedis(host, Integer.valueOf(port));
+        jedis.auth(password);
     }
 
     @AfterAll
@@ -211,7 +204,7 @@ public class JedisIntegrationTest {
     public void givenAPoolConfiguration_thenCreateAJedisPool() {
         final JedisPoolConfig poolConfig = buildPoolConfig();
 
-        try (JedisPool jedisPool = new JedisPool(poolConfig, "localhost", 6379, 5000, "password");
+        try (JedisPool jedisPool = new JedisPool(poolConfig, host, Integer.valueOf(port), Integer.valueOf(timeout), password);
              Jedis jedis = jedisPool.getResource()) {
 
             // do simple operation to verify that the Jedis resource is working
@@ -237,8 +230,8 @@ public class JedisIntegrationTest {
         poolConfig.setTestOnBorrow(true);
         poolConfig.setTestOnReturn(true);
         poolConfig.setTestWhileIdle(true);
-        // poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
-        // poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
+        //poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
+        //poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
         poolConfig.setNumTestsPerEvictionRun(3);
         poolConfig.setBlockWhenExhausted(true);
         return poolConfig;

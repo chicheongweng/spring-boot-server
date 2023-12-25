@@ -11,6 +11,6 @@ class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         
         // Reference: https://stackoverflow.com/questions/43794721/spring-boot-h2-console-throws-403-with-spring-security-1-5-2
-        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
+        return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/**"));
     }
 }

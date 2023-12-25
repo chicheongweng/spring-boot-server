@@ -1,7 +1,9 @@
 package com.zkpytug.springbootserver;
 
+import com.zkpytug.springbootserver.entity.Book;
 import com.zkpytug.springbootserver.entity.Customer;
 import com.zkpytug.springbootserver.repository.CustomerRepository;
+import com.zkpytug.springbootserver.repository.BooksRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -19,9 +21,27 @@ public class SpringBootServerApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(CustomerRepository repository) {
+    public CommandLineRunner demo(CustomerRepository repository, BooksRepository book) {
         return (args) -> {
             // save a few customers
+            book.save(new Book(100L, "Harry Porter"));
+            book.save(new Book(200L, "The Old Man and the Sea"));
+            // fetch all customers
+            log.info("Books found with findAll():");
+            log.info("-------------------------------");
+
+            Book b = book.findById(100L);
+            log.info("Book found with findById(100L):");
+            log.info("--------------------------------");
+            log.info(b.toString());
+            log.info("");
+
+            b = book.findById(100L);
+            log.info("Book found with findById(200L):");
+            log.info("--------------------------------");
+            log.info(b.toString());
+            log.info("");
+
             repository.save(new Customer("Jack", "Bauer"));
             repository.save(new Customer("Chloe", "O'Brian"));
             repository.save(new Customer("Kim", "Bauer"));
