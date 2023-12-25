@@ -15,6 +15,17 @@ repositories {
 	mavenCentral()
 }
 
+task printSourceSetInformation(){
+	doLast{
+		sourceSets.each { srcSet ->
+			println "["+srcSet.name+"]"
+			print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+			print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+			println ""
+		}
+	}
+}
+
 ext {
 	set('springCloudAzureVersion', "5.8.0")
 	set("embedded-redis.version","0.6")
@@ -52,11 +63,13 @@ dependencies {
 	implementation 'net.sourceforge.htmlunit:htmlunit'
 	implementation 'org.modelmapper:modelmapper:3.2.0'
 	implementation 'redis.clients:jedis:5.1.0'
-	implementation 'com.github.kstyrc:embedded-redis:${embedded-redis.version}'
-	implementation 'org.redisson:redisson:${redisson.version}'
+	implementation 'org.redisson:redisson:3.25.2'
+	testImplementation 'com.github.kstyrc:embedded-redis:0.6'
 	implementation 'io.lettuce:lettuce-core'
-	implementation 'io.netty:netty-transport-native-epoll:${epoll.version}'
-	testImplementation 'redis.embedded:embedded-redis:embedded-redis-0.3'
+	implementation 'io.netty:netty-transport-native-epoll:4.1.104.Final'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+	testImplementation 'it.ozimov:embedded-redis:0.7.3'
 }
 dependencyManagement {
 	imports {
@@ -66,4 +79,8 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:deprecation"
 }

@@ -1,4 +1,4 @@
-package com.zkpytug.springbootserver;
+package com.zkpytug.springbootserver.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

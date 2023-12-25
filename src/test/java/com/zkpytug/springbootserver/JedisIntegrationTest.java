@@ -8,12 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.Assert;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -21,17 +26,23 @@ import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 import redis.embedded.RedisServer;
+import redis.clients.jedis.DefaultJedisClientConfig;
 
+//@Configuration
+@EnableConfigurationProperties(RedisProperties.class)
+//@EnableTransactionManagement
+//@PropertySource({ "classpath:persistence-${env:local}.properties" })
 public class JedisIntegrationTest {
 
     private static Jedis jedis;
     private static RedisServer redisServer;
     private static int port;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws IOException {
 
         // Take an available port
+        /*
         ServerSocket s = new ServerSocket(0);
         port = s.getLocalPort();
         s.close();
@@ -41,17 +52,18 @@ public class JedisIntegrationTest {
                 .setting("maxmemory 128M")
                 .build();
         redisServer.start();
-
+        */
         // Configure JEDIS
-        jedis = new Jedis("localhost", port);
+        jedis = new Jedis("localhost", 6379);
+        jedis.auth("password");
     }
 
-    @AfterClass
+    @AfterAll
     public static void destroy() {
-        redisServer.stop();
+        //redisServer.stop();
     }
 
-    @After
+    @AfterEach
     public void flush() {
         jedis.flushAll();
     }
@@ -64,7 +76,7 @@ public class JedisIntegrationTest {
         jedis.set(key, value);
         String value2 = jedis.get(key);
 
-        Assert.assertEquals(value, value2);
+        Assertions.assertEquals(value, value2);
     }
 
     @Test
@@ -80,16 +92,16 @@ public class JedisIntegrationTest {
         String taskReturnedOne = jedis.rpop(queue);
 
         jedis.lpush(queue, taskThree);
-        Assert.assertEquals(taskOne, taskReturnedOne);
+        Assertions.assertEquals(taskOne, taskReturnedOne);
 
         String taskReturnedTwo = jedis.rpop(queue);
         String taskReturnedThree = jedis.rpop(queue);
 
-        Assert.assertEquals(taskTwo, taskReturnedTwo);
-        Assert.assertEquals(taskThree, taskReturnedThree);
+        Assertions.assertEquals(taskTwo, taskReturnedTwo);
+        Assertions.assertEquals(taskThree, taskReturnedThree);
 
         String taskReturnedFour = jedis.rpop(queue);
-        Assert.assertNull(taskReturnedFour);
+        Assertions.assertNull(taskReturnedFour);
     }
 
     @Test
@@ -103,18 +115,18 @@ public class JedisIntegrationTest {
         jedis.sadd(countries, countryOne);
 
         Set<String> countriesSet = jedis.smembers(countries);
-        Assert.assertEquals(1, countriesSet.size());
+        Assertions.assertEquals(1, countriesSet.size());
 
         jedis.sadd(countries, countryTwo);
         countriesSet = jedis.smembers(countries);
-        Assert.assertEquals(2, countriesSet.size());
+        Assertions.assertEquals(2, countriesSet.size());
 
         jedis.sadd(countries, countryThree);
         countriesSet = jedis.smembers(countries);
-        Assert.assertEquals(2, countriesSet.size());
+        Assertions.assertEquals(2, countriesSet.size());
 
         boolean exists = jedis.sismember(countries, countryThree);
-        Assert.assertTrue(exists);
+        Assertions.assertTrue(exists);
     }
 
     @Test
@@ -131,11 +143,11 @@ public class JedisIntegrationTest {
         jedis.hset(key, field2, value2);
 
         String value3 = jedis.hget(key, field);
-        Assert.assertEquals(value, value3);
+        Assertions.assertEquals(value, value3);
 
         Map<String, String> fields = jedis.hgetAll(key);
         String value4 = fields.get(field2);
-        Assert.assertEquals(value2, value4);
+        Assertions.assertEquals(value2, value4);
     }
 
     @Test
@@ -153,10 +165,10 @@ public class JedisIntegrationTest {
         });
 
         List<String> players = jedis.zrevrange(key, 0, 1);
-        Assert.assertEquals("PlayerThree", players.iterator().next());
+        Assertions.assertEquals("PlayerThree", players.iterator().next());
 
         long rank = jedis.zrevrank(key, "PlayerOne");
-        Assert.assertEquals(1, rank);
+        Assertions.assertEquals(1, rank);
     }
 
     @Test
@@ -172,10 +184,10 @@ public class JedisIntegrationTest {
         t.exec();
 
         boolean exists = jedis.sismember(friendsPrefix + userOneId, userTwoId);
-        Assert.assertTrue(exists);
+        Assertions.assertTrue(exists);
 
         exists = jedis.sismember(friendsPrefix + userTwoId, userOneId);
-        Assert.assertTrue(exists);
+        Assertions.assertTrue(exists);
     }
 
     @Test
@@ -191,15 +203,16 @@ public class JedisIntegrationTest {
         Response<List<String>> pipeRanking = p.zrange("ranking", 0, -1);
         p.sync();
 
-        Assert.assertTrue(pipeExists.get());
-        Assert.assertEquals(2, pipeRanking.get().size());
+        Assertions.assertTrue(pipeExists.get());
+        Assertions.assertEquals(2, pipeRanking.get().size());
     }
 
     @Test
     public void givenAPoolConfiguration_thenCreateAJedisPool() {
         final JedisPoolConfig poolConfig = buildPoolConfig();
 
-        try (JedisPool jedisPool = new JedisPool(poolConfig, "localhost", port); Jedis jedis = jedisPool.getResource()) {
+        try (JedisPool jedisPool = new JedisPool(poolConfig, "localhost", 6379, 5000, "password");
+             Jedis jedis = jedisPool.getResource()) {
 
             // do simple operation to verify that the Jedis resource is working
             // properly
@@ -209,7 +222,7 @@ public class JedisIntegrationTest {
             jedis.set(key, value);
             String value2 = jedis.get(key);
 
-            Assert.assertEquals(value, value2);
+            Assertions.assertEquals(value, value2);
 
             // flush Redis
             jedis.flushAll();
@@ -224,8 +237,8 @@ public class JedisIntegrationTest {
         poolConfig.setTestOnBorrow(true);
         poolConfig.setTestOnReturn(true);
         poolConfig.setTestWhileIdle(true);
-        poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
-        poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
+        // poolConfig.setMinEvictableIdleTimeMillis(Duration.ofSeconds(60).toMillis());
+        // poolConfig.setTimeBetweenEvictionRunsMillis(Duration.ofSeconds(30).toMillis());
         poolConfig.setNumTestsPerEvictionRun(3);
         poolConfig.setBlockWhenExhausted(true);
         return poolConfig;

@@ -1,5 +1,7 @@
 package com.zkpytug.springbootserver;
 
+import com.zkpytug.springbootserver.entity.Customer;
+import com.zkpytug.springbootserver.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
