@@ -24,20 +24,17 @@ public class SpringBootServerApplication {
     public CommandLineRunner demo(CustomerRepository repository, BooksRepository book) {
         return (args) -> {
             // save a few customers
-            book.save(new Book(100L, "Harry Porter"));
-            book.save(new Book(200L, "The Old Man and the Sea"));
-            // fetch all customers
-            log.info("Books found with findAll():");
-            log.info("-------------------------------");
+            book.save(new Book(1L, "Harry Porter"));
+            book.save(new Book(2L, "The Old Man and the Sea"));
 
-            Book b = book.findById(100L);
-            log.info("Book found with findById(100L):");
+            Book b = book.findById(1L);
+            log.info("Book found with findById(1L):");
             log.info("--------------------------------");
             log.info(b.toString());
             log.info("");
 
-            b = book.findById(100L);
-            log.info("Book found with findById(200L):");
+            b = book.findById(2L);
+            log.info("Book found with findById(2L):");
             log.info("--------------------------------");
             log.info(b.toString());
             log.info("");

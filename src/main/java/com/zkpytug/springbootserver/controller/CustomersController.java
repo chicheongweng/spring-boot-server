@@ -8,19 +8,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zkpytug.springbootserver.repository.BooksRepository;
-import com.zkpytug.springbootserver.entity.Book;
+import com.zkpytug.springbootserver.repository.CustomerRepository;
+import com.zkpytug.springbootserver.entity.Customer;
+
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/books")
-public class BooksController {
+@RequestMapping("/customers")
+public class CustomersController {
 
     @Autowired
-    private BooksRepository repository;
+    private CustomerRepository repository;
 
     @PostMapping("/create")
-    public String newBook(@RequestBody Book newBook) {
-        repository.save(newBook);
+    public String newBook(@RequestBody Customer newCustomer) {
+        repository.save(newCustomer);
         return "Added";
     }
 
@@ -28,5 +30,4 @@ public class BooksController {
     public String findOne(@PathVariable Long id) {
         return repository.findById(id).toString();
     }
-
 }
