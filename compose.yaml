@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     container_name: spring-boot-server
-    restart: always
+    restart: no
     build: .
 #    command: /usr/local/bin/gunicorn --bind 0.0.0.0:12000 benapi_django.wsgi:application
 #    command: manage.py runserver 0.0.0.0:12000
@@ -20,13 +20,13 @@ services:
 #    env_file: .env
     image: ghcr.io/chicheongweng/spring-boot-server:latest
     environment:
-      dbusername: 'sa'
-      dbpassword: 'password'
+      - REDIS_HOST=springbootserver-redis
+      - env=local
     networks:
       - springbootservernetwork
 
   mssql:
-    container_name: sprinbootserver-mssql
+    container_name: springbootserver-mssql
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "<YourStrong@Passw0rd>"
@@ -48,7 +48,7 @@ services:
 
   redis:
     restart: always
-    container_name: sprinbootserver-redis
+    container_name: springbootserver-redis
     command: redis-server --requirepass password
     image: redis:latest
     ports:
