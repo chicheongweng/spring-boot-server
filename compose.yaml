@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  web:
+    container_name: spring-boot-server
+    restart: always
+    build: .
+#    command: /usr/local/bin/gunicorn --bind 0.0.0.0:12000 benapi_django.wsgi:application
+#    command: manage.py runserver 0.0.0.0:12000
+    depends_on:
+      - mssql
+      - redis
+    ports:
+      - "8080:8080"
+    links:
+      - mssql:mssql
+      - redis:redis
+#    volumes:
+#      - /Users/ubuntu/workspace/benapi_django:/Users/ubuntu/workspace/benapi_django
+#    env_file: .env
+    image: ghcr.io/chicheongweng/spring-boot-server:latest
+    environment:
+      dbusername: 'sa'
+      dbpassword: 'password'
+    networks:
+      - springbootservernetwork
+
+  mssql:
+    container_name: sprinbootserver-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "<YourStrong@Passw0rd>"
+    # mssql server image isn't available for arm64 architecture, so we use azure-sql instead
+    image: mcr.microsoft.com/azure-sql-edge:1.0.4
+    # If you really want to use MS SQL Server, uncomment the following line
+    #image: mcr.microsoft.com/mssql/server
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"<YourStrong@Passw0rd>\" -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+    ports:
+      - "1433:1433"
+    networks:
+      - springbootservernetwork
+
+  redis:
+    restart: always
+    container_name: sprinbootserver-redis
+    command: redis-server --requirepass password
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - springbootservernetwork
+
+volumes:
+  redisdata:
+
+networks:
+    springbootservernetwork:
+        driver: bridge
