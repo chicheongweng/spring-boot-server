@@ -18,12 +18,9 @@ services:
 #    env_file: .env
     image: ghcr.io/chicheongweng/spring-boot-server:latest
     environment:
-      - SPRING_REDIS_HOST=springbootserver-redis
-      - SPRING_REDIS_PORT=6379
-      - SPRING_REDIS_PASSWORD=password
-      - REDIS_HOST=springbootserver-redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=password
+      - SPRING_DATA_REDIS_HOST=springbootserver-redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_PASSWORD=password
       - SPRING_DATASOURCE_URL=jdbc:sqlserver://springbootserver-mssql:1433;encrypt=true;trustServerCertificate=true;hostNameInCertificate=*;loginTimeout=30;
       - SPRING_DATASOURCE_DRIVERCLASSNAME=com.microsoft.sqlserver.jdbc.SQLServerDriver
       - SPRING_DATASOURCE_USERNAME=sa
