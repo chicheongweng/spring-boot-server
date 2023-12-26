@@ -18,7 +18,16 @@ services:
 #    env_file: .env
     image: ghcr.io/chicheongweng/spring-boot-server:latest
     environment:
+      - SPRING_REDIS_HOST=springbootserver-redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_PASSWORD=password
       - REDIS_HOST=springbootserver-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://springbootserver-mssql:1433;encrypt=true;trustServerCertificate=true;hostNameInCertificate=*;loginTimeout=30;
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=com.microsoft.sqlserver.jdbc.SQLServerDriver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=<YourStrong@Passw0rd>
       - env=local
     networks:
       - springbootservernetwork
@@ -26,8 +35,8 @@ services:
   mssql:
     container_name: springbootserver-mssql
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "<YourStrong@Passw0rd>"
+      ACCEPT_EULA: Y
+      SA_PASSWORD: <YourStrong@Passw0rd>
     # mssql server image isn't available for arm64 architecture, so we use azure-sql instead
     image: mcr.microsoft.com/azure-sql-edge:1.0.4
     # If you really want to use MS SQL Server, uncomment the following line
