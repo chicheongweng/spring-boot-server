@@ -70,6 +70,8 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 	testImplementation 'it.ozimov:embedded-redis:0.7.3'
+	runtimeOnly group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: '4.1.104.Final', classifier: 'osx-aarch_64'
+	runtimeOnly group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: '4.1.104.Final', classifier: 'osx-x86_64'
 }
 dependencyManagement {
 	imports {
