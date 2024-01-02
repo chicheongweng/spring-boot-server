@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  web:
+  spring-boot-server:
     container_name: spring-boot-server
     restart: no
     build: .
@@ -16,7 +16,7 @@ services:
 #    volumes:
 #      - /Users/ubuntu/workspace/benapi_django:/Users/ubuntu/workspace/benapi_django
 #    env_file: .env
-    image: ghcr.io/chicheongweng/spring-boot-server:latest
+#   image: ghcr.io/chicheongweng/spring-boot-server:latest
     environment:
       - SPRING_DATA_REDIS_HOST=springbootserver-redis
       - SPRING_DATA_REDIS_PORT=6379
