@@ -86,3 +86,15 @@ tasks.named('test') {
 tasks.withType(JavaCompile) {
 	options.compilerArgs << "-Xlint:deprecation"
 }
+
+bootJar {
+	from("src/main/resources/applicationinsights-agent-3.4.19.jar") {
+		into("BOOT-INF/lib")
+	}
+}
+
+bootRun {
+	jvmArgs = [
+			"-javaagent:src/main/resources/applicationinsights-agent-3.4.19.jar",
+	]
+}
