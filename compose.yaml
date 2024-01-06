@@ -5,67 +5,31 @@ services:
     container_name: spring-boot-server
     restart: no
     build: .
-    depends_on:
-      - mssql
-      - redis
+#    depends_on:
+#      - mssql
+#      - redis
     ports:
       - "8080:8080"
-    links:
-      - mssql:mssql
-      - redis:redis
+#    links:
+#      - mssql:mssql
+#      - redis:redis
 #    volumes:
 #      - /Users/ubuntu/workspace/benapi_django:/Users/ubuntu/workspace/benapi_django
 #    env_file: .env
 #   image: ghcr.io/chicheongweng/spring-boot-server:latest
     environment:
-      - SPRING_DATA_REDIS_HOST=springbootserver-redis
+      - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
       - SPRING_DATA_REDIS_PASSWORD=password
-      - SPRING_DATASOURCE_URL=jdbc:sqlserver://springbootserver-mssql:1433;encrypt=true;trustServerCertificate=true;hostNameInCertificate=*;loginTimeout=30;
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://mssql:1433;encrypt=true;trustServerCertificate=true;hostNameInCertificate=*;loginTimeout=30;
       - SPRING_DATASOURCE_DRIVERCLASSNAME=com.microsoft.sqlserver.jdbc.SQLServerDriver
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=<YourStrong@Passw0rd>
       - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=ec537f86-2187-4c12-b82e-fd0ff98ce011;IngestionEndpoint=https://eastasia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastasia.livediagnostics.monitor.azure.com/
       - env=local
     networks:
-      - springbootservernetwork
-
-  mssql:
-    container_name: springbootserver-mssql
-    environment:
-      ACCEPT_EULA: Y
-      SA_PASSWORD: <YourStrong@Passw0rd>
-    # mssql server image isn't available for arm64 architecture, so we use azure-sql instead
-    image: mcr.microsoft.com/azure-sql-edge:1.0.4
-    # If you really want to use MS SQL Server, uncomment the following line
-    #image: mcr.microsoft.com/mssql/server
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"<YourStrong@Passw0rd>\" -Q 'SELECT 1' || exit 1"]
-      interval: 10s
-      retries: 10
-      start_period: 10s
-      timeout: 3s
-    ports:
-      - "1433:1433"
-    networks:
-      - springbootservernetwork
-
-  redis:
-    restart: always
-    container_name: springbootserver-redis
-    command: redis-server --requirepass password
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    volumes:
-      - redisdata:/data
-    networks:
-      - springbootservernetwork
-
-volumes:
-  redisdata:
+      - dockerdatanetwork
 
 networks:
-    springbootservernetwork:
-        driver: bridge
+    dockerdatanetwork:
+        external: true        
