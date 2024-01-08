@@ -29,6 +29,9 @@ services:
       - env=local
     networks:
       - dockerdatanetwork
+    volumes:
+      - ${HOME}/workspace/spring-boot-server:${HOME}/workspace/spring-boot-server
+
 
 networks:
     dockerdatanetwork:
