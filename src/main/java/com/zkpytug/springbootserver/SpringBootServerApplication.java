@@ -39,11 +39,11 @@ public class SpringBootServerApplication {
             log.info(b.toString());
             log.info("");
 
-            repository.save(new Customer("Jack", "Bauer"));
-            repository.save(new Customer("Chloe", "O'Brian"));
-            repository.save(new Customer("Kim", "Bauer"));
-            repository.save(new Customer("David", "Palmer"));
-            repository.save(new Customer("Michelle", "Dessler"));
+            repository.save(new Customer(1L, "Jack", "Bauer"));
+            repository.save(new Customer(2L, "Chloe", "O'Brian"));
+            repository.save(new Customer(3L, "Kim", "Bauer"));
+            repository.save(new Customer(4L, "David", "Palmer"));
+            repository.save(new Customer(5L, "Michelle", "Dessler"));
 
             // fetch all customers
             log.info("Customers found with findAll():");

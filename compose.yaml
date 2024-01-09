@@ -16,7 +16,9 @@ services:
 #    volumes:
 #      - /Users/ubuntu/workspace/benapi_django:/Users/ubuntu/workspace/benapi_django
 #    env_file: .env
-#   image: ghcr.io/chicheongweng/spring-boot-server:latest
+    image: ghcr.io/chicheongweng/spring-boot-server:latest
+    pull_policy: always
+
     environment:
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
