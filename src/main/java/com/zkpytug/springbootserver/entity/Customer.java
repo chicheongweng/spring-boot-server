@@ -9,13 +9,25 @@ import jakarta.persistence.Id;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
 
     protected Customer() {}
 
+    // other fields, getters, and setters...
+    /*
+    private static GenerationType getGenerationType() {
+        String databaseType = System.getProperty("database.type"); // or retrieve this from your configuration
+
+        if ("SQLServer".equals(databaseType)) {
+            return GenerationType.IDENTITY;
+        } else {
+            return GenerationType.AUTO;
+        }
+    }
+    */
     public Customer(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
