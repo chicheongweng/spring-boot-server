@@ -30,6 +30,7 @@ public class SpringBootServerApplication {
     public CommandLineRunner demo(CustomerRepository repository, BooksRepository book, SecretClient secretClient) {
         return (args) -> {
             // Create a secret client using the DefaultAzureCredential
+            /*
                         SecretClient client = new SecretClientBuilder()
                                 .vaultUrl("https://kv-rcit-rhk-ucp-dev-01.vault.azure.net/")
                                 .credential(new DefaultAzureCredentialBuilder().build())
@@ -42,7 +43,9 @@ public class SpringBootServerApplication {
                             //Handle Exception
                             e.printStackTrace();
                         }
-
+             */
+            log.info("Secret redis-rcit-rhk-ucp-dev-01-accesskey: " + secretClient.getSecret("redis-rcit-rhk-ucp-dev-01-accesskey").getValue());
+            log.info("Secret sqldb-rcit-rhk-ucp-dev-01-password: " + secretClient.getSecret("sqldb-rcit-rhk-ucp-dev-01-password").getValue());
             // save a few customers
             book.save(new Book(1L, "Harry Porter"));
             book.save(new Book(2L, "The Old Man and the Sea"));
