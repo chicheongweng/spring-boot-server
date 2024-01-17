@@ -34,7 +34,7 @@ services:
       - SPRING_JPA_SHOW_SQL=true
 
       - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=ec537f86-2187-4c12-b82e-fd0ff98ce011;IngestionEndpoint=https://eastasia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastasia.livediagnostics.monitor.azure.com/
-      - spring.profiles.active=local
+      - SPRING_PROFILES_ACTIVE=local
     networks:
       - dockerdatanetwork
 
