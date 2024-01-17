@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 //@EnableConfigurationProperties(RedisProperties.class)
 @EnableTransactionManagement
-@PropertySource({ "classpath:persistence-${env:local}.properties" })
+@PropertySource({ "classpath:application-${spring.profiles.active:local}.properties" })
+
 public class RedisConfig {
 
     @Bean
