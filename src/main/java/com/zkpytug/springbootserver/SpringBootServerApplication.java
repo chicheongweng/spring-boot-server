@@ -1,9 +1,14 @@
 package com.zkpytug.springbootserver;
 
+import com.azure.core.exception.ClientAuthenticationException;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.azure.security.keyvault.secrets.SecretClient;
+import com.azure.security.keyvault.secrets.SecretClientBuilder;
+import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.zkpytug.springbootserver.entity.Book;
 import com.zkpytug.springbootserver.entity.Customer;
-import com.zkpytug.springbootserver.repository.CustomerRepository;
 import com.zkpytug.springbootserver.repository.BooksRepository;
+import com.zkpytug.springbootserver.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,9 +25,24 @@ public class SpringBootServerApplication {
         SpringApplication.run(SpringBootServerApplication.class);
     }
 
+
     @Bean
-    public CommandLineRunner demo(CustomerRepository repository, BooksRepository book) {
+    public CommandLineRunner demo(CustomerRepository repository, BooksRepository book, SecretClient secretClient) {
         return (args) -> {
+            // Create a secret client using the DefaultAzureCredential
+                        SecretClient client = new SecretClientBuilder()
+                                .vaultUrl("https://kv-rcit-rhk-ucp-dev-01.vault.azure.net/")
+                                .credential(new DefaultAzureCredentialBuilder().build())
+                                .buildClient();
+
+                        try {
+                            log.info("secret redis-rcit-rhk-ucp-dev-01-accesskey: " + client.getSecret("redis-rcit-rhk-ucp-dev-01-accesskey").getValue());
+                            log.info("secret sqldb-rcit-rhk-ucp-dev-01-password: " + client.getSecret("sqldb-rcit-rhk-ucp-dev-01-password").getValue());
+                        } catch (ClientAuthenticationException e) {
+                            //Handle Exception
+                            e.printStackTrace();
+                        }
+
             // save a few customers
             book.save(new Book(1L, "Harry Porter"));
             book.save(new Book(2L, "The Old Man and the Sea"));
