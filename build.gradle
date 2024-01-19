@@ -76,7 +76,6 @@ dependencies {
 	runtimeOnly group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: '4.1.104.Final', classifier: 'osx-aarch_64'
 	runtimeOnly group: 'io.netty', name: 'netty-resolver-dns-native-macos', version: '4.1.104.Final', classifier: 'osx-x86_64'
 	implementation 'com.azure.spring:spring-cloud-azure-starter-keyvault'
-	implementation 'com.azure.spring:azure-spring-boot-starter-keyvault-secrets:3.6.0'
 }
 dependencyManagement {
 	imports {

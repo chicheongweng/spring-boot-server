@@ -1,16 +1,17 @@
 package com.zkpytug.springbootserver;
 
 import com.azure.core.exception.ClientAuthenticationException;
+import com.azure.identity.ClientSecretCredential;
 import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
-import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
 import com.zkpytug.springbootserver.entity.Book;
 import com.zkpytug.springbootserver.entity.Customer;
 import com.zkpytug.springbootserver.repository.BooksRepository;
 import com.zkpytug.springbootserver.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,19 +22,25 @@ public class SpringBootServerApplication {
 
     private static final Logger log = LoggerFactory.getLogger(SpringBootServerApplication.class);
 
+    private final ClientSecretCredential clientSecretCredential;
+    @Autowired
+    public SpringBootServerApplication(ClientSecretCredential clientSecretCredential) {
+        this.clientSecretCredential = clientSecretCredential;
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(SpringBootServerApplication.class);
     }
 
 
+
     @Bean
-    public CommandLineRunner demo(CustomerRepository repository, BooksRepository book, SecretClient secretClient) {
+    public CommandLineRunner demo(CustomerRepository repository, BooksRepository book) {
         return (args) -> {
             // Create a secret client using the DefaultAzureCredential
-            /*
                         SecretClient client = new SecretClientBuilder()
                                 .vaultUrl("https://kv-rcit-rhk-ucp-dev-01.vault.azure.net/")
-                                .credential(new DefaultAzureCredentialBuilder().build())
+                                .credential(this.clientSecretCredential)
                                 .buildClient();
 
                         try {
@@ -43,9 +50,7 @@ public class SpringBootServerApplication {
                             //Handle Exception
                             e.printStackTrace();
                         }
-             */
-            log.info("Secret redis-rcit-rhk-ucp-dev-01-accesskey: " + secretClient.getSecret("redis-rcit-rhk-ucp-dev-01-accesskey").getValue());
-            log.info("Secret sqldb-rcit-rhk-ucp-dev-01-password: " + secretClient.getSecret("sqldb-rcit-rhk-ucp-dev-01-password").getValue());
+
             // save a few customers
             book.save(new Book(1L, "Harry Porter"));
             book.save(new Book(2L, "The Old Man and the Sea"));
