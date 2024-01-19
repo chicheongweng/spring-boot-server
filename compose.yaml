@@ -32,9 +32,6 @@ services:
       - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.SQLServer2012Dialect
       - SPRING_JPA_HIBERNATE_DLL_AUTO=create
       - SPRING_JPA_SHOW_SQL=true
-      - AZURE_TENANT_ID=4f63aaa0-5612-4fe8-8175-9f9f4d26c7b4
-      - AZURE_CLIENT_SECRET=Kpc8Q~w4m.t2e_qv3Gq6s-klnlnSiUB13-OpQdx.
-      - AZURE_CLIENT_ID=f2077429-9df5-4176-880b-4638949ab6e1
 
       - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=ec537f86-2187-4c12-b82e-fd0ff98ce011;IngestionEndpoint=https://eastasia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastasia.livediagnostics.monitor.azure.com/
       - SPRING_PROFILES_ACTIVE=local
