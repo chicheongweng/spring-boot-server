@@ -3,7 +3,7 @@ version: '3'
 services:
   spring-boot-server:
     container_name: spring-boot-server
-    restart: always
+    restart: no
     build: .
 #    depends_on:
 #      - mssql
@@ -30,8 +30,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=<YourStrong@Passw0rd>
       - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.SQLServerDialect
-      - SPRING_JPA_HIBERNATE_DLL_AUTO=create-drop
-      - SPRING_JPA_SHOW_SQL=true
 
       - APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=ec537f86-2187-4c12-b82e-fd0ff98ce011;IngestionEndpoint=https://eastasia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastasia.livediagnostics.monitor.azure.com/
       - SPRING_PROFILES_ACTIVE=local
