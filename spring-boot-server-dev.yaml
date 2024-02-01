@@ -33,7 +33,7 @@ spec:
         env:
         - name: TITLE
           value: "Spring Boot Server"
-        - name: spring.profiles.active
+        - name: SPRING_PROFILES_ACTIVE
           value: dev
         - name: APPLICATIONINSIGHTS_CONNECTION_STRING
           value: InstrumentationKey=0af3126a-f911-404f-b307-e110de913ff3;IngestionEndpoint=https://eastasia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastasia.livediagnostics.monitor.azure.com/
