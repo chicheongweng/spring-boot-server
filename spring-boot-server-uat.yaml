@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-server
+  namespace: ricoh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-boot-server
+  template:
+    metadata:
+      labels:
+        app: spring-boot-server
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.azure.com/agentpool
+                operator: In
+                values:
+                - userpool
+      imagePullSecrets:
+        - name: acr-authentication
+      containers:
+      - name: spring-boot-server
+        image: acrrcirhkucp01.azurecr.io/spring-boot-server:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TITLE
+          value: "Spring Boot Server"
+        - name: spring.profiles.active
+          value: uat
+        - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+          value: InstrumentationKey=b109dc54-0ac2-4d25-9993-18a29d870d80;IngestionEndpoint=https://eastasia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://eastasia.livediagnostics.monitor.azure.com/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-server
+  namespace: ricoh
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+  selector:
+    app: spring-boot-server
